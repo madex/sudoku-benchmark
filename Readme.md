@@ -10,9 +10,9 @@ The tests ard made on macOs on macbook pro 15 from early 2013.
 
 | lang   | time  |  exe-size |
 | ------ | ----- | --------- |
-| c (clang) | 7 ms  | 9 KB      |
+| c (clang) | 7 ms  | 9 KB   |
 | rust   | 6 ms  | 320 KB    |
-| cystal | 32 ms | 420 KB    |
+| cystal | 9.5 ms | 420 KB   |
 | js Chorme | 24 ms | |
 | js Firefox | 21 ms | |
 | java | 24 ms |  | | 
