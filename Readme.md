@@ -17,4 +17,4 @@ The tests ard made on macOs on macbook pro 15 from early 2013.
 | js Firefox | 21 ms | |
 | java | 24 ms |  | | 
 | lua | 1,7 s | |
-| python3.7 | 2.7 | |
+| python3.7 | 2.7 s | |
