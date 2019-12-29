@@ -1,0 +1,108 @@
+<html><head></head><body>
+<script type="text/javascript">
+const rule_rows = [
+  0, 0, 0, 0, 0, 0, 0, 0, 0,
+  1, 1, 1, 1, 1, 1, 1, 1, 1,
+  2, 2, 2, 2, 2, 2, 2, 2, 2,
+  3, 3, 3, 3, 3, 3, 3, 3, 3,
+  4, 4, 4, 4, 4, 4, 4, 4, 4,
+  5, 5, 5, 5, 5, 5, 5, 5, 5,
+  6, 6, 6, 6, 6, 6, 6, 6, 6,
+  7, 7, 7, 7, 7, 7, 7, 7, 7,
+  8, 8, 8, 8, 8, 8, 8, 8, 8]
+const rule_colums = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8,
+  0, 1, 2, 3, 4, 5, 6, 7, 8,
+  0, 1, 2, 3, 4, 5, 6, 7, 8,
+  0, 1, 2, 3, 4, 5, 6, 7, 8,
+  0, 1, 2, 3, 4, 5, 6, 7, 8,
+  0, 1, 2, 3, 4, 5, 6, 7, 8,
+  0, 1, 2, 3, 4, 5, 6, 7, 8,
+  0, 1, 2, 3, 4, 5, 6, 7, 8,
+  0, 1, 2, 3, 4, 5, 6, 7, 8]
+const rule_basic_blocks = [
+  0, 0, 0,  1, 1, 1,  2, 2, 2,
+  0, 0, 0,  1, 1, 1,  2, 2, 2,
+  0, 0, 0,  1, 1, 1,  2, 2, 2,
+  
+  3, 3, 3,  4, 4, 4,  5, 5, 5,
+  3, 3, 3,  4, 4, 4,  5, 5, 5,
+  3, 3, 3,  4, 4, 4,  5, 5, 5,
+  
+  6, 6, 6,  7, 7, 7,  8, 8, 8,
+  6, 6, 6,  7, 7, 7,  8, 8, 8,
+  6, 6, 6,  7, 7, 7,  8, 8, 8];
+let quiz = [
+  1, 0, 0,  0, 0, 7,  0, 9, 0,
+  0, 3, 0,  0, 2, 0,  0, 0, 8,
+  0, 0, 9,  6, 0, 0,  5, 0, 0,
+  0, 0, 5,  3, 0, 0,  9, 0, 0,
+  0, 1, 0,  0, 8, 0,  0, 0, 2,
+  6, 0, 0,  0, 0, 4,  0, 0, 0,
+  3, 0, 0,  0, 0, 0,  0, 1, 0, 
+  0, 4, 0,  0, 0, 0,  0, 0, 7,
+  0, 0, 7,  0, 0, 0,  3, 0, 0]
+const rules = [rule_rows, rule_colums, rule_basic_blocks]
+var board = quiz
+function rule_valid(board, rule, sets) {
+	let flags =[0, 0, 0, 0, 0, 0, 0, 0, 0]
+	for (let i = 0; i < 81; i++) {
+		if (board[i] == 0)
+			continue
+		let r = rule[i]
+		let mask = 1 << board[i]
+		if (flags[r] & mask)
+			return false
+		flags[r] |= mask
+	}
+	for (let i = 0; i < 81; i++)
+		sets[i] |= flags[rule[i]]
+	return true;
+}
+function sudoku_try_set_field(field_no, board, rules, sets) {
+	let i;
+	while (true) { // find field_no of the next unset field
+		if (field_no >= 9*9) 
+			return true; // solved
+		if (board[field_no] == 0)
+			break;
+		field_no++;	
+	}
+	for (i = 1; i < 10; i++) {
+		if (((1 << i) & sets[field_no]) == 0) {
+			let newSets = sets.slice()
+			board[field_no] = i;
+			if (!rules.some(function(rule) {
+				return !rule_valid(board, rule, newSets);
+			})) {
+				if (sudoku_try_set_field(field_no+1, board, rules, newSets))
+					return true;
+			}
+		}
+	}
+	board[field_no] = 0;
+	return false;
+}
+function print_board(board) {
+	let j, l, i
+	document.write("<table>")
+	for (i = 0; i < 9; i++) {
+		document.write("<tr>")
+		for (j = 0; j < 9; j++) {
+			document.write("<td>" + ((board[i*9 + j] == 0)?'_':board[i*9 + j]) + "</td>")
+		}
+		document.write("</tr>")
+	}
+	document.write("</table>")
+}
+let sets = new Array(81).fill(0)
+document.write("<h1>Sudoku Solver</h1> <br><b>solve following sudoko:</b><br>")
+print_board(board)
+let start = new Date().getTime();
+if (sudoku_try_set_field(0, board, rules, sets)) {
+		document.write('found solution in '+ (new Date().getTime() - start) + ' ms :<br>')
+		print_board(board)
+} else {
+		document.write("no solition found")
+}
+</script></body></html>
